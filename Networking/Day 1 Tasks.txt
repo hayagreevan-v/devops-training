@@ -1,0 +1,136 @@
+Day 1 Tasks
+ 
+1. Problem Statement
+You are given the IP block 172.16.0.0/20. Create 3 subnets from this block so that each subnet has at least 200 usable IP addresses.
+For any 3 subnets you create, provide:
+Subnet mask
+Network address
+Broadcast address
+Usable IP range
+Number of usable hosts
+
+Ans : 
+Subnet Mask : 255.255.255.0
+1st Subnet : 172.16.0.0 - 172.16.0.255
+            Network Address : 172.16.0.0
+            Broadcast Address : 172.16.0.255
+            Usable IP Address : 172.16.0.1 - 172.16.0.254
+            No. of Usable hosts : 254
+2nd Subnet : 172.16.1.0 - 172.16.1.255
+            Network Address : 172.16.1.0
+            Broadcast Address : 172.16.1.255
+            Usable IP Address : 172.16.1.1 - 172.16.1.254
+            No. of Usable hosts : 254
+
+3rd Subnet : 172.16.2.0 - 172.16.2.255
+            Network Address : 172.16.2.0
+            Broadcast Address : 172.16.2.255
+            Usable IP Address : 172.16.2.1 - 172.16.2.254
+            No. of Usable hosts : 254
+
+2. Problem Statement
+You are given the IP block 172.16.0.0/20. Subnet this block to satisfy the following requirements:
+Subnet A: needs at least 500 usable IP addresses
+Subnet B: needs at least 200 usable IP addresses
+Subnet C: needs at least 50 usable IP addresses
+Remember that “at least” does not mean you can waste space by oversizing all subnets. 
+Choose the smallest subnet mask that still satisfies each requirement. For each subnet, provide:
+Subnet mask
+Network address
+Broadcast address
+Usable IP range
+Number of usable hosts
+
+Ans : 
+Subnet Mask : 255.255.254.0
+1st Subnet : 172.16.0.0 - 172.16.1.255
+            Network Address : 172.16.0.0
+            Broadcast Address : 172.16.1.255
+            Usable IP Address : 172.16.0.1 - 172.16.1.254
+            No. of Usable hosts : 510
+
+Subnet Mask : 255.255.255.0
+2st Subnet : 172.16.2.0 - 172.16.2.255
+            Network Address : 172.16.2.0
+            Broadcast Address : 172.16.2.255
+            Usable IP Address : 172.16.2.1 - 172.16.2.254
+            No. of Usable hosts : 254
+
+Subnet Mask : 255.255.255.192
+1st Subnet : 172.16.3.0 - 172.16.3.63
+            Network Address : 172.16.3.0
+            Broadcast Address : 172.16.3.63
+            Usable IP Address : 172.16.3.1 - 172.16.3.62
+            No. of Usable hosts : 62
+ 
+3. Problem Statement
+Your company has a /24 network (192.168.50.0/24) assigned to the QA environment. Over the years, many test servers were added and now you’re running out of IPs. 
+The QA team reports that they need 40 more servers but the subnet is already full.
+How do you solve this IP exhaustion problem without disrupting existing servers?
+Would you consider subnetting, super-netting, or migration to a new CIDR? Explain your approach.
+
+Ans:
+    Super-netting : Decreasing Subnet Mask from /24 to /23 increases the number of usable hosts from 254 to 510. It won't disrupt the existing server except the need to change subnet mask in existing servers.
+    but no need for changing IP Addresses of existing servers.
+ 
+4. Problem Statement
+You’re designing a 3-tier web application with the following requirements:
+Web tier: already has 15 servers running in 192.168.100.0/24.
+App tier: already has 25 servers running in 192.168.101.0/24.
+DB tier: currently has 5 servers in 192.168.102.0/24, but you’ve been told you’ll need to add 20 more DB servers.
+You cannot change the existing allocations for Web and App. How would you adjust or create new subnets to fit the DB tier growth, while keeping the design clean and future-proof?
+
+Ans : Current existing network design is suitable for accomodating 20 more new DB servers. It accomodate upto 254 DB servers. 
+        If needed to keep these 20 new DB servers seperate from existing DB servers. we can create subnet of /27 where 8 subnets are created from 192.168.102.0/24 each subnet can accomodate maximum of 30 DB servers. 
+
+5. Problem Statement
+The server at `ec2-18-208-201-86.compute-1.amazonaws.com` is hosting a web application on an unknown port.
+Scan the server to determine which port the web application is listening on. Limit your search to the common service ports range (1–1024) to make the process efficient.
+After identifying the correct port, verify connectivity by sending a request (for example, using a command-line tool or a browser).
+Capture the network traffic during this request and analyze it in a packet inspection tool to study the details of the HTTP communication.
+
+Ans :
+
+Used nmap to scan the ports : nmap -p 1-1024 c2-18-208-201-86.compute-1.amazonaws.com
+
+nmap -p 1-1024 ec2-18-208-201-86.compute-1.amazonaws.com
+Starting Nmap 7.94SVN ( https://nmap.org ) at 2025-09-11 11:47 UTC
+Nmap scan report for ec2-18-208-201-86.compute-1.amazonaws.com (18.208.201.86)
+Host is up (0.00040s latency).
+Not shown: 1021 filtered tcp ports (no-response)
+PORT    STATE SERVICE
+22/tcp  open  ssh
+80/tcp  open  http
+445/tcp open  microsoft-ds
+
+Web server is running on Port 80
+
+
+curl ec2-18-208-201-86.compute-1.amazonaws.com
+
+Wireshark :
+29	2.788024	10.74.217.105	18.208.201.86	TCP	78	51849 → 80 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 WS=64 TSval=619162980 TSecr=0 SACK_PERM
+32	3.055267	18.208.201.86	10.74.217.105	TCP	74	80 → 51849 [SYN, ACK] Seq=0 Ack=1 Win=62643 Len=0 MSS=1300 SACK_PERM TSval=2955113797 TSecr=619162980 WS=128
+33	3.055418	10.74.217.105	18.208.201.86	TCP	66	51849 → 80 [ACK] Seq=1 Ack=1 Win=131392 Len=0 TSval=619163248 TSecr=2955113797
+34	3.056170	10.74.217.105	18.208.201.86	HTTP	170	GET / HTTP/1.1 
+38	3.334239	18.208.201.86	10.74.217.105	TCP	66	80 → 51849 [ACK] Seq=1 Ack=105 Win=62592 Len=0 TSval=2955114076 TSecr=619163248
+39	3.334240	18.208.201.86	10.74.217.105	HTTP	314	HTTP/1.1 200 OK  (text/html)
+40	3.334321	10.74.217.105	18.208.201.86	TCP	66	51849 → 80 [ACK] Seq=105 Ack=249 Win=131200 Len=0 TSval=619163527 TSecr=2955114077
+41	3.334648	10.74.217.105	18.208.201.86	TCP	66	51849 → 80 [FIN, ACK] Seq=105 Ack=249 Win=131200 Len=0 TSval=619163527 TSecr=2955114077
+42	3.664263	18.208.201.86	10.74.217.105	TCP	66	80 → 51849 [FIN, ACK] Seq=249 Ack=106 Win=62592 Len=0 TSval=2955114356 TSecr=619163527
+43	3.664410	10.74.217.105	18.208.201.86	TCP	66	51849 → 80 [ACK] Seq=106 Ack=250 Win=131200 Len=0 TSval=619163857 TSecr=2955114356
+
+
+TCP 3-way handshake has been initiated first. SYN - SYN-ACK - ACK
+Host sends SYN signal to Server.
+Server establishes connection with Host by sending SYN-ACK.
+Host sends ACK signal to Server.
+Successfully established TCP with 3-way handshake.
+
+Then HTTP GET Request is Sent and Server replies with ACK signal acknowledging request has been recieved. 
+Then Server sent response data with Status code 200 and Host replies with ACK signal acknowledging response has been recieved from Server.
+
+Host sends FIN-ACK signal to Server. (Signal for Termination of TCP connection)
+Server replies with FIN-ACK to Host.
+Host sends ACK to Server.
+End of the TCP.
