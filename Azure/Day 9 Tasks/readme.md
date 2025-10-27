@@ -1332,3 +1332,9 @@ jobs:
 
 ## Links
 - https://chatgpt.com/share/68fbc537-c710-800a-a19f-c08f02fca7e1
+- https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview?tabs=json
+- https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/file
+- https://bicep.kwitantie.app/
+- https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/overview
+- https://github.com/hayagreevan-v/azure-pipeline-demo
+- https://learn.microsoft.com/en-us/azure/app-service/overview-vnet-integration

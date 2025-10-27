@@ -368,3 +368,18 @@ az deployment group create --resource-group hayagreevan-rg --template-file 'main
   "type": "Microsoft.Resources/deployments"
 }
 ```
+
+## Links
+- https://chatgpt.com/share/68ff6555-33d4-800a-a08d-16a350adedd7
+- https://azure.github.io/bicep/
+- https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/quickstart-create-template-specs?tabs=azure-powershell
+- https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deploy-what-if?tabs=azure-cli%2CCLI
+- https://learn.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-bicep?toc=%2Fazure%2Fazure-resource-manager%2Fbicep%2Ftoc.json&tabs=CLI
+- https://learn.microsoft.com/en-us/azure/virtual-network/quickstart-create-virtual-network?toc=%2Fazure%2Fazure-resource-manager%2Fbicep%2Ftoc.json&tabs=bicep
+- https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/loops
+- https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/learn-bicep
+- https://learn.microsoft.com/en-us/azure/templates/microsoft.network/virtualnetworks/virtualnetworkpeerings?pivots=deployment-language-bicep
+- https://github.com/Azure/azure-quickstart-templates/blob/master/quickstarts/microsoft.network/vnet-to-vnet-peering/main.bicep
+- https://github.com/Azure/azure-quickstart-templates/blob/master/quickstarts/microsoft.network/existing-vnet-to-vnet-peering/main.bicep
+- https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-cli
+- https://askubuntu.com/questions/311053/how-to-make-ip-forwarding-permanent
