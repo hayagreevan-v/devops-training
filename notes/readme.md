@@ -224,3 +224,15 @@ Insights
 ![alt text](<CloudWatch Insights and Operational Visibility.png>)
 
 Cloudtrail only stores data for 90 days, to store more than that then, store it in S3
+
+
+## Lambda
+- one aws account can only support upto 1000 concurrent execution
+- reserved concurrency
+- provisioned concurreny
+
+- lambda with rds proxy
+
+## DynamoDB
+- supports Two-way Replication
+- DAX - DynamoDB Acceralator for cache
