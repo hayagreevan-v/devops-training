@@ -1,0 +1,4 @@
+resource "aws_key_pair" "key" {
+  key_name   = "${var.name}-key"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDpqSjySip3HRQybdHJkjY9RSxuAxn9awCiEZLqFBMCcVHANhA5Gzc5g8351EwocnMbQQJTAGlRFX2tVsetEQk145/nF+MkbYJIgqUTLFGOWFsdw2thYMzQbf2aPI9KX0a6Ok/3six3+nHeN5SRn2jSG5JG+nNCcm+mO+1wR3eZ5T0/At4lFy4eJNZi8X7BRNQXrjlGqFIrFcQ26tjsumv2Alba/0c6AHKOyK11xKwLiGz8aqkGn+BxrVZHIDpTDn5veX57QLndQxuqYkONFkDOUNRNTyELc1bmPqgUiR9dQhQagtur6b1lQ6AWGxB7N+1rI3MzZ/+wgn7pYL8hh2BJ6y9aLxAYHm7mvgS6z+Sewuv2+k39ToHQf/M2f0GjtIba121TckCgHWTCnzAcOEJvW8knpZmlALD4qZyOKp5IY8A6/glrdV1midog2/TFPjbvOq/0vky0gSmkXLgT8VbWocRSiJgy3qSKY/62g/1gITj5bQUvagtsDc/Cfmjsa60= generated-by-azure"
+}
