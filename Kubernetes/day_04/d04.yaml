@@ -1,0 +1,88 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    argocd.argoproj.io/tracking-id: trainee-hayagreevan-debugging-d4-04:/Pod:trainee-hayagreevan/d4-04-liveness-app
+  creationTimestamp: "2025-11-14T06:55:57Z"
+  labels:
+    app: liveness-app
+    task: debugging-d4-04
+  name: d4-04-liveness-app
+  namespace: trainee-hayagreevan
+  resourceVersion: "9813948"
+  uid: 682e71ac-45dc-4eef-9d65-6670c3392dba
+spec:
+  containers:
+  - image: nginx:latest
+    imagePullPolicy: Always
+    livenessProbe:
+      failureThreshold: 3
+      httpGet:
+        path: /
+        port: 80
+        scheme: HTTP
+      initialDelaySeconds: 3
+      periodSeconds: 5
+      successThreshold: 1
+      timeoutSeconds: 1
+    name: web-server
+    ports:
+    - containerPort: 80
+      name: http
+      protocol: TCP
+    resources:
+      limits:
+        cpu: 200m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 64Mi
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-l8ljp
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  # nodeName: ip-10-0-0-6.ec2.internal
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoSchedule
+    key: environment
+    operator: Equal
+    value: production
+  volumes:
+  - name: kube-api-access-l8ljp
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace

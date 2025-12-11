@@ -43,4 +43,8 @@ Manually create EC2 instances and import them into Terraform state.
 - https://developer.hashicorp.com/terraform/language/functions/templatefile
 - https://github.com/hayagreevan-v/php-mysql-demo-web-server
 - https://spacelift.io/blog/terraform-templates
-- 
+- https://spacelift.io/blog/terraform-lookup
+- https://developer.hashicorp.com/terraform/language/expressions/dynamic-blocks
+- https://developer.hashicorp.com/terraform/language/state/purpose
+- https://developer.hashicorp.com/terraform/language/modules/develop/structure
+- https://developer.hashicorp.com/terraform/language/block/module#create-multiple-instances-of-module-resources

@@ -1,0 +1,37 @@
+pipeline {
+    agent any
+    parameters {
+        string(
+            name: 'ENVIRONMENT',
+            defaultValue: 'dev',
+            description: 'Choose environment: dev / test / prod'
+        )
+    }
+    stages{
+        stage("Build"){
+            steps {
+                sh 'echo "Building ${ENVIRONMENT}"'
+            }
+        }
+        stage("Test"){
+            steps {
+                sh 'echo "Testing ${ENVIRONMENT}"'
+            }
+        }
+        stage("Deploy"){
+            steps {
+                script {
+                    if(ENVIRONMENT == 'dev'){
+                        sh 'echo "Deploying ${ENVIRONMENT} - Development"'
+                    }
+                    else if(ENVIRONMENT == 'prod'){
+                        sh 'echo "Deploying ${ENVIRONMENT}" - Production"'
+                    }
+                    else if(ENVIRONMENT == 'test'){
+                        sh 'echo "Deploying ${ENVIRONMENT} - Test"'
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,100 @@
+name: cd-pipeline
+trigger: none
+
+resources:
+  pipelines:
+    - pipeline: ci-pipeline
+      source: ci-pipeline      # <-- name of the CI pipeline
+      trigger: none              # no auto trigger
+      branch: main               # from which branch CI runs
+      version: "*"           # pull the latest run
+
+stages:
+- stage: Deploy
+  displayName: "Terraform - CD (apply)"
+  jobs:
+  - job: ApplyPlan
+    displayName: "Apply Terraform Plan"
+    pool:
+      name: Default   # your self-hosted agent
+
+    steps:
+    - checkout: self
+
+    # Download the plan file produced by CI pipeline
+    - task: DownloadPipelineArtifact@2
+      displayName: "Download terraform plan"
+      inputs:
+        buildType: "specific"
+        project: "$(System.TeamProject)"
+        # pipeline: "$(resources.pipeline.ci-pipeline.runID)"
+        # FIX: Point to the Definition ID, not the Run ID
+        definition: "$(resources.pipeline.ci-pipeline.pipelineID)" 
+        # FIX: Tell it to download a specific build
+        buildVersionToDownload: "specific"
+        # FIX: Pass the specific Run ID here
+        buildId: "$(resources.pipeline.ci-pipeline.runID)"
+        artifact: "tfplan"
+        path: "$(System.DefaultWorkingDirectory)/downloaded_plan"
+
+    # Install Terraform
+    - task: TerraformInstaller@1
+      displayName: "Install Terraform"
+      inputs:
+        terraformVersion: 'latest'
+
+    # Azure login (Managed Identity)
+    - task: AzureCLI@2
+      displayName: "Azure CLI login (Managed Identity)"
+      inputs:
+        azureSubscription: hayagreevan-mi
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          echo "Logged in using Managed Identity..."
+          az account show
+
+          SUB_ID=$(az account show --query id -o tsv)
+          TENANT_ID=$(az account show --query tenantId -o tsv)
+
+          echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID]$SUB_ID"
+          echo "##vso[task.setvariable variable=ARM_TENANT_ID]$TENANT_ID"
+
+          echo "Subscription = $SUB_ID"
+          echo "Tenant = $TENANT_ID"
+
+    # Terraform apply
+    - script: |
+        set -e
+
+        echo "Files in downloaded_plan:"
+        ls -la
+
+        PLAN_FILE="$(System.DefaultWorkingDirectory)/downloaded_plan/plan.tfplan"
+
+        if [ ! -f "$PLAN_FILE" ]; then
+          echo "ERROR: plan.tfplan not found!"
+          exit 1
+        fi
+
+        echo "Running terraform apply with Managed Identity authentication"
+
+        echo "Initializing Terraform..."
+        terraform init
+
+        terraform apply -input=false "$PLAN_FILE"
+      displayName: "Terraform Apply"
+    
+    # - task: AzureCLI@2
+    #   displayName: "Verify resources"
+    #   inputs:
+    #     azureSubscription: hayagreevan-mi
+    #     scriptType: bash
+    #     scriptLocation: inlineScript
+    #     inlineScript: |
+    #       # Simple verifications using Azure CLI (adjust for your resource names)
+    #       echo "Verifying Resource Group: ${resource_group_name}"
+    #       az group show -n "${resource_group_name}" --query "{name:name,location:location}" -o table
+    #       echo "Verifying App Service: ${app_service_name}"
+    #       az webapp show -g "${resource_group_name}" -n "${app_service_name}" --query "{name:name,state:state,hostNames:defaultHostName}" -o table
+    #       echo "Done verification."

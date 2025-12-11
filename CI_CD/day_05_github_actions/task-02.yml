@@ -1,0 +1,37 @@
+name: S3 Deployment with parameter
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: Enter environment
+        required: true
+        options:
+        - dev
+        - prod
+        - stage
+
+jobs:
+  s3_deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Displaying Environment
+        run: echo "${{inputs.environment}}"
+      - name: Build final bucket name
+        id: vars
+        run: |
+          FINAL_BUCKET="hex-gh-${{ inputs.environment }}"
+          echo "bucket=$FINAL_BUCKET" >> $GITHUB_OUTPUT
+
+      - name: Create S3 bucket
+        run: |
+            aws s3api create-bucket --bucket "${{ steps.vars.outputs.bucket}}" --region us-east-1 
+            if [ "${{ inputs.environment }}" == 'prod' ]; then
+              aws s3api put-bucket-versioning --bucket ${{ steps.vars.outputs.bucket}} --versioning-configuration Status=Enabled
+            fi
+        continue-on-error: true
+
+      - name: Upload files to s3
+        run: aws s3 cp upload/ s3://${{ steps.vars.outputs.bucket}}/upload/ --recursive

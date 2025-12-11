@@ -1,0 +1,40 @@
+services:
+  server1:
+    container_name: app1
+    build: ./Flaskserver
+    ports:
+      - 8080:5000
+    networks:
+      - db-network
+    environment:
+      NAME: Flask1
+      MYSQL_PASSWORD: hayagreevan
+      MYSQL_USER: hayagreevan
+      MYSQL_HOST: db
+      MYSQL_DBNAME: hayagreevan
+    depends_on:
+      - db
+    
+
+  db:
+    container_name: mysqldb
+    image: mysql:8
+    networks:
+      - db-network
+    ports:
+      - 3306:3306
+    volumes:
+      - dbvol:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: hayagreevan
+      MYSQL_USER: hayagreevan
+      MYSQL_PASSWORD: hayagreevan
+      MYSQL_DATABASE: hayagreevan
+
+volumes:
+  dbvol:
+
+networks:
+  db-network:
+  
+

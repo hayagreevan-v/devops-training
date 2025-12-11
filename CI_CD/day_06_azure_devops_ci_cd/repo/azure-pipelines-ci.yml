@@ -1,0 +1,75 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+name: ci-pipeline
+trigger: none
+
+stages:
+- stage: Terraform_CI
+  displayName: "Terraform - CI (init/validate/plan)"
+  jobs:
+  - job: Plan
+    displayName: "Init, Validate, Plan"
+    pool:
+      name: Default
+
+    steps:
+    - checkout: self
+      clean: true
+
+    - task: TerraformInstaller@1
+      displayName: "Install Terraform"
+      inputs:
+        terraformVersion: 'latest'    # bump to desired version
+
+    - task: AzureCLI@2
+      displayName: "Azure CLI login"
+      inputs:
+        azureSubscription: hayagreevan-mi
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          echo "Logged in to Azure via service connection: hayagreevan-mi"
+          az account show
+          SUB_ID=$(az account show --query id -o tsv)
+          TENANT_ID=$(az account show --query tenantId -o tsv)
+
+          echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID]$SUB_ID"
+          echo "##vso[task.setvariable variable=ARM_TENANT_ID]$TENANT_ID"
+
+          # The service connection already injects clientId + secret automatically
+          echo "ARM SUBSCRIPTION = $SUB_ID"
+
+
+    - script: |
+        set -e
+        
+        # initialize
+        terraform init -input=false
+
+        # # fmt (check)
+        # echo "Running terraform fmt -check"
+        # terraform fmt -check
+
+        # validate (capture warnings)
+        echo "Running terraform validate and capturing output"
+        terraform validate 2>&1 | tee ../validate_output.txt || true
+
+        # Plan: pass all variables from pipeline using -var
+        terraform plan -input=false -out=plan.tfplan 
+
+        # Save human readable plan for inspection too
+        terraform show -no-color plan.tfplan > ../plan_human_readable.txt
+      displayName: "Terraform init/fmt/validate/plan"
+      env:
+        ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+        ARM_TENANT_ID: $(ARM_TENANT_ID)
+
+
+    - task: PublishPipelineArtifact@1
+      displayName: "Publish terraform plan artifact"
+      inputs:
+        targetPath: 'plan.tfplan'
+        artifact: 'tfplan'
+        publishLocation: 'pipeline'

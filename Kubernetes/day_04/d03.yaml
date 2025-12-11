@@ -1,0 +1,103 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    argocd.argoproj.io/tracking-id: trainee-hayagreevan-debugging-d4-03:/Pod:trainee-hayagreevan/d4-03-sidecar-app
+  creationTimestamp: "2025-11-14T06:55:57Z"
+  labels:
+    app: sidecar-app
+    task: debugging-d4-03
+  name: d4-03-sidecar-app
+  namespace: trainee-hayagreevan
+  resourceVersion: "8881441"
+  uid: e0e02218-98e3-407e-b961-9bfa9a0806fa
+spec:
+  containers:
+  - args:
+    - while true; do echo "$(date) - Application log entry" >> /var/log/app/app.log;
+      sleep 5; done
+    command:
+    - sh
+    - -c
+    image: busybox:latest
+    imagePullPolicy: Always
+    name: main-app
+    resources:
+      limits:
+        cpu: 200m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 64Mi
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/log/app
+      name: log-volume
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-fsdrl
+      readOnly: true
+  - args:
+    - tail -f /var/log/app/app.log
+    command:
+    - sh
+    - -c
+    image: busybox:latest
+    imagePullPolicy: Always
+    name: log-sidecar
+    resources:
+      limits:
+        cpu: 100m
+        memory: 64Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/log/app
+      name: log-volume
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-fsdrl
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  # nodeName: ip-10-0-35-123.ec2.internal
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - emptyDir: {}
+    name: log-volume
+  - name: kube-api-access-fsdrl
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:    
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace      

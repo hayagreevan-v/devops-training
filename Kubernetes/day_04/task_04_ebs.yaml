@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ebs
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: gp3
+  resources:
+    requests:
+      storage: 500Mi
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ebs-pod
+spec:
+  containers:
+  - name: ebs-pod
+    image: ubuntu:24.04
+    command:
+    - sh
+    - -c
+    args:
+    - sleep infinity
+    volumeMounts:
+    - name: ebs-storage
+      mountPath: /shared
+  volumes:
+  - name: ebs-storage
+    persistentVolumeClaim:
+      claimName: ebs

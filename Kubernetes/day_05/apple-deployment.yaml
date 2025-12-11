@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apple-deployment
+  labels:
+    app: apple
+spec:
+  template:
+    metadata:
+      name: apple
+      labels:
+        app: apple
+    spec:
+      containers:
+      - name: apple
+        image: hashicorp/http-echo
+        args:
+        - "-text=Apple"
+        ports:
+        - containerPort: 5678
+      resources:
+        requests:
+          cpu: 100m
+        limits:
+          cpu: 200m
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apple

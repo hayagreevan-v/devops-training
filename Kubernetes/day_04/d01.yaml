@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    argocd.argoproj.io/tracking-id: trainee-hayagreevan-debugging-d4-01:/Pod:trainee-hayagreevan/d4-01-tainted-app
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{"argocd.argoproj.io/tracking-id":"trainee-hayagreevan-debugging-d4-01:/Pod:trainee-hayagreevan/d4-01-tainted-app"},"labels":{"app":"tainted-app","task":"debugging-d4-01"},"name":"d4-01-tainted-app","namespace":"trainee-hayagreevan"},"spec":{"containers":[{"image":"nginx:latest","name":"nginx","ports":[{"containerPort":80}],"resources":{"limits":{"cpu":"200m","memory":"128Mi"},"requests":{"cpu":"100m","memory":"64Mi"}}}],"nodeSelector":{"workload":"training"},"tolerations":[{"effect":"NoSchedule","key":"environment","operator":"Equal","value":"production"}]}}
+  creationTimestamp: "2025-11-14T06:55:55Z"
+  labels:
+    app: tainted-app
+    task: debugging-d4-01
+  name: d4-01-tainted-app
+  namespace: trainee-hayagreevan
+  resourceVersion: "9111232"
+  uid: f4aa1b2d-79d2-4d7c-9faf-56288cff56e5
+spec:
+  containers:
+  - image: nginx:latest
+    imagePullPolicy: Always
+    name: nginx
+    ports:
+    - containerPort: 80
+      protocol: TCP
+    resources:
+      limits:
+        cpu: 200m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 64Mi
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-r2p7p
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  # nodeSelector:
+  #   workload: training
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoSchedule
+    key: environment
+    operator: Equal
+    value: production
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: kube-api-access-r2p7p
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: d04-t01-deployment
+  labels:
+    app: d04-t01
+spec:
+  template:
+    metadata:
+      name: d04-t01-pod
+      labels:
+        app: d04-t01
+    spec:
+      initContainers:
+      - name: init-container
+        image: hayagreevanv/s3-pull-demo
+        command:
+        - sh
+        - -c
+        args:
+        - |
+          cp /app/readme.md /shared/readme.md
+        volumeMounts:
+        - mountPath: /shared
+          name: shared-data
+      containers:
+      - name: main-contiainer
+        image: ubuntu:24.04
+        command:
+        - sh
+        - -c
+        args:
+        - sleep infinity
+        volumeMounts:
+        - mountPath: /app
+          name: shared-data
+      volumes:
+      - name: shared-data
+        emptyDir: {} 
+  selector:
+    matchLabels:
+      app: d04-t01
+  replicas: 1

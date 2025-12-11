@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: d06-t02-deployment
+  labels:
+    app: d06-t02
+spec:
+  template:
+    metadata:
+      name: d06-t02-pod
+      labels:
+        app: d06-t02
+    spec:
+      serviceAccountName: s3-reader
+      initContainers:
+      - name: init-container
+        image: amazon/aws-cli
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            ls -l /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+            echo "Fetching file from S3..."
+            aws s3 cp s3://hex-k8-bucket/secret.txt /shared/secret.txt
+            echo "File fetched successfully."
+        volumeMounts:
+        - mountPath: /shared
+          name: shared-data
+        - name: aws-iam-token
+          mountPath: /var/run/secrets/eks.amazonaws.com/serviceaccount
+          readOnly: true
+        env:
+          - name: AWS_ROLE_ARN
+            value: "arn:aws:iam::590852515231:role/hex-k8-s3-access-role"
+          - name: AWS_WEB_IDENTITY_TOKEN_FILE
+            value: "/var/run/secrets/eks.amazonaws.com/serviceaccount/token"
+          - name: AWS_DEFAULT_REGION
+            value: "us-east-1"
+      containers:
+      - name: main-contiainer
+        image: ubuntu:24.04
+        command:
+        - sh
+        - -c
+        args:
+        - sleep infinity
+        volumeMounts:
+        - mountPath: /app
+          name: shared-data
+      volumes:
+      - name: shared-data
+        emptyDir: {} 
+      - name: aws-iam-token
+        projected:
+          sources:
+          - serviceAccountToken:
+              audience: sts.amazonaws.com
+              expirationSeconds: 86400
+              path: token
+  selector:
+    matchLabels:
+      app: d06-t02
+  replicas: 1

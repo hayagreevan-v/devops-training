@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orange-deployment
+  labels:
+    app: orange
+spec:
+  template:
+    metadata:
+      name: orange
+      labels:
+        app: orange
+    spec:
+      containers:
+      - name: orange
+        image: hashicorp/http-echo
+        args:
+        - "-text=orange"
+        ports:
+        - containerPort: 5678
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orange

@@ -1,0 +1,107 @@
+services:
+
+  server1:
+    container_name: app1
+    image: flask-server
+    networks:
+      - web-network
+      - db-network
+    environment:
+      - NAME=flask1
+      - MYSQL_HOST=db
+      - MYSQL_PASSWORD=hayagreevan
+      - MYSQL_USER=hayagreevan
+      - MYSQL_DBNAME=hayagreevan
+    depends_on:
+      - db
+
+  server2:
+    container_name: app2
+    image: flask-server
+    networks:
+      - web-network
+      - db-network
+    environment:
+      - NAME=flask2
+      - MYSQL_HOST=db
+      - MYSQL_PASSWORD=hayagreevan
+      - MYSQL_USER=hayagreevan
+      - MYSQL_DBNAME=hayagreevan
+    depends_on:
+      - db
+
+
+
+  server3:
+    container_name: app3
+    image: flask-server
+    networks:
+      - web-network
+      - db-network
+    environment:
+      - NAME=flask3
+      - MYSQL_HOST=db
+      - MYSQL_PASSWORD=hayagreevan
+      - MYSQL_USER=hayagreevan
+      - MYSQL_DBNAME=hayagreevan
+    depends_on:
+      - db
+
+
+  nginx:
+    container_name: nginx
+    build: ./Nginxserver
+    ports:
+      - 8080:80
+    networks:
+      - web-network
+    depends_on:
+      - server1
+      - server2
+      - server3
+
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:0.8.0
+    command:
+      - -nginx.scrape-uri
+      - http://nginx:80/nginx_status
+    networks:
+      - web-network
+    depends_on:
+      - nginx
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./Prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    networks:
+      - web-network
+
+  db:
+    container_name: mysqldb
+    image: mysql:8
+    networks:
+      - db-network
+    ports:
+      - 3306:3306
+    volumes:
+      - dbvol:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: hayagreevan
+      MYSQL_USER: hayagreevan
+      MYSQL_PASSWORD: hayagreevan
+      MYSQL_DATABASE: hayagreevan
+
+
+
+volumes:
+  dbvol:
+
+networks:
+  web-network:
+  db-network:
+  
+
+      

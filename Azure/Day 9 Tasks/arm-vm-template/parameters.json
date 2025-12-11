@@ -1,0 +1,78 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "eastus"
+        },
+        "networkInterfaceName1": {
+            "value": "hayagreevan-vm-1854_z1"
+        },
+        "subnetName": {
+            "value": "default"
+        },
+        "virtualNetworkId": {
+            "value": "/subscriptions/145ccdc1-6c51-4e45-a04e-21bdea03d170/resourceGroups/hayagreevan-rg/providers/Microsoft.Network/virtualNetworks/hayagreevan-vnet"
+        },
+        "publicIpAddressName1": {
+            "value": "hayagreevan-vm-1-ip"
+        },
+        "publicIpAddressType": {
+            "value": "Static"
+        },
+        "publicIpAddressSku": {
+            "value": "Standard"
+        },
+        "pipDeleteOption": {
+            "value": "Delete"
+        },
+        "virtualMachineName": {
+            "value": "hayagreevan-vm-1"
+        },
+        "virtualMachineName1": {
+            "value": "hayagreevan-vm-1"
+        },
+        "virtualMachineComputerName1": {
+            "value": "hayagreevan-vm-1"
+        },
+        "virtualMachineRG": {
+            "value": "hayagreevan-rg"
+        },
+        "osDiskType": {
+            "value": "StandardSSD_LRS"
+        },
+        "osDiskDeleteOption": {
+            "value": "Delete"
+        },
+        "virtualMachineSize": {
+            "value": "Standard_B1s"
+        },
+        "nicDeleteOption": {
+            "value": "Delete"
+        },
+        "hibernationEnabled": {
+            "value": false
+        },
+        "adminUsername": {
+            "value": "azureuser"
+        },
+        "adminPublicKey": {
+            "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDpqSjySip3HRQybdHJkjY9RSxuAxn9awCiEZLqFBMCcVHANhA5Gzc5g8351EwocnMbQQJTAGlRFX2tVsetEQk145/nF+MkbYJIgqUTLFGOWFsdw2thYMzQbf2aPI9KX0a6Ok/3six3+nHeN5SRn2jSG5JG+nNCcm+mO+1wR3eZ5T0/At4lFy4eJNZi8X7BRNQXrjlGqFIrFcQ26tjsumv2Alba/0c6AHKOyK11xKwLiGz8aqkGn+BxrVZHIDpTDn5veX57QLndQxuqYkONFkDOUNRNTyELc1bmPqgUiR9dQhQagtur6b1lQ6AWGxB7N+1rI3MzZ/+wgn7pYL8hh2BJ6y9aLxAYHm7mvgS6z+Sewuv2+k39ToHQf/M2f0GjtIba121TckCgHWTCnzAcOEJvW8knpZmlALD4qZyOKp5IY8A6/glrdV1midog2/TFPjbvOq/0vky0gSmkXLgT8VbWocRSiJgy3qSKY/62g/1gITj5bQUvagtsDc/Cfmjsa60= generated-by-azure"
+        },
+        "enablePeriodicAssessment": {
+            "value": "ImageDefault"
+        },
+        "securityType": {
+            "value": "TrustedLaunch"
+        },
+        "secureBoot": {
+            "value": true
+        },
+        "vTPM": {
+            "value": true
+        },
+        "virtualMachine1Zone": {
+            "value": "1"
+        }
+    }
+}

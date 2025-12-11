@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-1
+data:
+  NAME: hayagreevan
+
+---
+# k create configmap config-2 --from-file=task_03-config.properties
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: task-03
+spec:
+  containers:
+  - name: ubuntu
+    image: ubuntu:24.04
+    command: ["sleep"]
+    args: ["infinity"]
+    env:
+    - name: NAME
+      valueFrom:
+        configMapKeyRef:
+          name: config-1
+          key: NAME
+    volumeMounts:
+    - name: config
+      mountPath: "/config"
+      readOnly: true
+  volumes:
+  - name: config
+    configMap:
+      name: config-2
+      items:
+      - key: task_03-config.properties
+        path: task_03-config.properties
